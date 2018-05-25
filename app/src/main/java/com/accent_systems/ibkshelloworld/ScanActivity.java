@@ -24,6 +24,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Spannable;
@@ -41,7 +42,9 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ScanActivity extends AppCompatActivity {
@@ -58,6 +61,9 @@ public class ScanActivity extends AppCompatActivity {
     //File Writing stuff
     File gpxfile, root1;
     FileWriter writer;
+    String fileName;
+    Date now = new Date();
+    SimpleDateFormat  formatter = new SimpleDateFormat("yyyy_MM_dd");
 
     private List<String> scannedDeivcesList;
     private ArrayAdapter<String> adapter;
@@ -110,19 +116,26 @@ public class ScanActivity extends AppCompatActivity {
 
 
         //initialize file writing stuff
+        checkPermissions();
+        fileName = formatter.format(now) + "TEST.txt";
         Environment.getExternalStorageDirectory();
         try{
-            root1 = new File(Environment.getExternalStorageDirectory(), "werte");
-            Log.d(TAG, "onCreate: root1 created 1");
-            if(!root1.exists()) {
-                Log.d(TAG, "onCreate: root1 exists 2");
+            root1 = new File(Environment.getExternalStorageDirectory() +File.separator+"Beacon_Folder", "Data");
+            if(!root1.exists())
                 root1.mkdirs();
-                Log.d(TAG, "onCreate: directories created");
-            }
-            gpxfile = new File(root1, "Testwerte");
-            Log.d(TAG, "onCreate: gpxFile created");
-            writer = new FileWriter(gpxfile);
-            Log.d(TAG, "onCreate: Writer initialized");
+            gpxfile = new File(root1, fileName);
+            writer = new FileWriter(gpxfile, true);
+// root1 = new File(Environment.getExternalStorageDirectory(), "werte");
+//            Log.d(TAG, "onCreate: root1 created 1");
+//            if(!root1.exists()) {
+//                Log.d(TAG, "onCreate: root1 exists 2");
+//                root1.mkdirs();
+//                Log.d(TAG, "onCreate: directories created");
+
+//            gpxfile = new File(root1, "Testwerte");
+//            Log.d(TAG, "onCreate: gpxFile created");
+//            writer = new FileWriter(gpxfile);
+//            Log.d(TAG, "onCreate: Writer initialized");
 
         }
         catch (IOException e) {
@@ -133,6 +146,18 @@ public class ScanActivity extends AppCompatActivity {
         initBT();
         //Start scan of bluetooth devices
         startLeScan(true);
+
+    }
+
+    private void checkPermissions() {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(getApplicationContext(), "Darf nicht schreiben auf Ext. Storage", Toast.LENGTH_LONG).show();
+        }
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(getApplicationContext(), "Darf nicht lesen auf Ext. Storage", Toast.LENGTH_LONG).show();
+        }
 
     }
 
@@ -207,7 +232,8 @@ public class ScanActivity extends AppCompatActivity {
                     scannedDeivcesList.set(i, result.getRssi()+"  "+result.getDevice().getName()+ "\n       ("+result.getDevice().getAddress()+")");
                     //Write rssi to file!
                     try {
-                        writer.append(result.getDevice().getName() + result.getRssi());
+                        if(result.getDevice().getName() != null && result.getDevice().getName().contains("iBKS"))
+                        writer.append(result.getDevice().getName() + result.getRssi() +"\n");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -220,7 +246,8 @@ public class ScanActivity extends AppCompatActivity {
                 scannedDeivcesList.add(result.getRssi()+"  "+result.getDevice().getName()+ "\n       ("+result.getDevice().getAddress()+")");
                 //Write to file
                 try {
-                    writer.append(result.getDevice().getName() + result.getRssi());
+                    if(result.getDevice().getName() != null && result.getDevice().getName().contains("iBKS"))
+                    writer.append(result.getDevice().getName() + result.getRssi() +"\n");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
