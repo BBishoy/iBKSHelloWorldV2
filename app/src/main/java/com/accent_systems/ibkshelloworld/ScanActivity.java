@@ -217,7 +217,7 @@ public class ScanActivity extends AppCompatActivity {
 
 
             //Only listen for iBKS devices
-            // if(result.getDevice().getName() != null && result.getDevice().getName().contains("iBKS")){
+            if(result.getDevice().getName() != null && result.getDevice().getName().contains("iBKS")){
 
 
             //Here will be received all the detected BLE devices around. "result" contains the device
@@ -283,7 +283,7 @@ public class ScanActivity extends AppCompatActivity {
                 }
             });
 
-        //}
+        }
 
         }
     };
