@@ -243,7 +243,7 @@ public class ScanActivity extends AppCompatActivity {
                         if (result.getDevice().getUuids() != null) {
                             uuid = result.getDevice().getUuids()[0].toString();
                         } else uuid = "null";
-                        //Smartphone-Time and BT-Time
+                        //getting Smartphone-Time and BT-Time
                         nanoSmartphone = String.valueOf(System.nanoTime());
                         nanoBT = String.valueOf(result.getTimestampNanos());
                         writer.append(nanoSmartphone + "," + result.getDevice().getName() + "," + result.getRssi() + "," + nanoBT + "," + uuid + "\n");
