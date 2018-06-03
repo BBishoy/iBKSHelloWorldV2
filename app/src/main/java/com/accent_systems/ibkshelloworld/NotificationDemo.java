@@ -58,7 +58,7 @@ public class NotificationDemo extends AppCompatActivity {
         mPrefs = getSharedPreferences("iBKSDemo", Context.MODE_PRIVATE);
         animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.radar_rotate_anim);
         editBtn = (TextView) findViewById(R.id.editBtn);
-        editBtn.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
+   //     editBtn.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
 
         editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,8 +96,8 @@ public class NotificationDemo extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         SpannableString s = new SpannableString("Notifications");
-        s.setSpan(new com.accent_systems.ibkshelloworld.TypefaceSpan(this, "Khand-Bold.ttf"), 0, s.length(),
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+   //     s.setSpan(new com.accent_systems.ibkshelloworld.TypefaceSpan(this, "Khand-Bold.ttf"), 0, s.length(),
+   //             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         s.setSpan(new ForegroundColorSpan(Color.parseColor("#3a3c3e")), 0, s.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         setTitle(s);
 
@@ -220,7 +220,7 @@ public class NotificationDemo extends AppCompatActivity {
         text.setText(mMsg);
 
         Button dialogButton = (Button) dialog.findViewById(R.id.closeBtn);
-        dialogButton.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
+    //    dialogButton.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -241,13 +241,13 @@ public class NotificationDemo extends AppCompatActivity {
         dialog.setContentView(R.layout.custom_dialog_settings);
 
         TextView title = (TextView) dialog.findViewById(R.id.settTitle);
-        title.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
+     //   title.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
 
         TextView uuidTV = (TextView) dialog.findViewById(R.id.settUuid);
-        uuidTV.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
+      //  uuidTV.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
 
         final Spinner spinneruid = (Spinner) dialog.findViewById(R.id.spinneruid);
-        title.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
+      //  title.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
         spinneruid.setSelection(Integer.parseInt(frameType));
 
 
@@ -284,7 +284,7 @@ public class NotificationDemo extends AppCompatActivity {
         uuid.setText(mUuid);
 
         TextView rannge = (TextView) dialog.findViewById(R.id.settRange);
-        rannge.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
+    //    rannge.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
 
         final Spinner dstt = (Spinner) dialog.findViewById(R.id.distSpinner);
         if(dRange.equals("Immediate")){
@@ -296,7 +296,7 @@ public class NotificationDemo extends AppCompatActivity {
         }
 
         TextView msgg = (TextView) dialog.findViewById(R.id.settMsg);
-        msgg.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
+   //     msgg.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
 
         final EditText msgt = (EditText) dialog.findViewById(R.id.msgg);
         msgt.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/OpenSans-Regular.ttf"));
@@ -322,7 +322,7 @@ public class NotificationDemo extends AppCompatActivity {
         err.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/OpenSans-Light.ttf"));
 
         Button cancelButton = (Button) dialog.findViewById(R.id.cancelBtn);
-        cancelButton.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
+     //   cancelButton.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -333,7 +333,7 @@ public class NotificationDemo extends AppCompatActivity {
         });
 
         Button saveButton = (Button) dialog.findViewById(R.id.saveBtn);
-        saveButton.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
+     //   saveButton.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

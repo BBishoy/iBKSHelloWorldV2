@@ -41,14 +41,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         prox = (TextView) findViewById(R.id.proxTV);
-        prox.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
+       // prox.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
         notif = (TextView) findViewById(R.id.notifTV);
-        notif.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
+     //   notif.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
 
         SpannableString s = new SpannableString("iBKS Hello World");
 
-        s.setSpan(new com.accent_systems.ibkshelloworld.TypefaceSpan(this,"Khand-Bold.ttf"), 0, s.length(),
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+      //  s.setSpan(new com.accent_systems.ibkshelloworld.TypefaceSpan(this,"Khand-Bold.ttf"), 0, s.length(),
+              //  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         s.setSpan(new ForegroundColorSpan(Color.parseColor("#3a3c3e")), 0, s.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         setTitle(s);
 

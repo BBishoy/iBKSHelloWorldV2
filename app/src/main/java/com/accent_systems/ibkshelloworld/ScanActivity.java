@@ -2,8 +2,6 @@ package com.accent_systems.ibkshelloworld;
 
 
 import android.Manifest;
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -17,25 +15,18 @@ import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -46,6 +37,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.math.*;
 
 public class ScanActivity extends AppCompatActivity {
 
@@ -56,14 +48,16 @@ public class ScanActivity extends AppCompatActivity {
     BluetoothGatt mBluetoothGatt;
     BluetoothLeScanner scanner;
     ScanSettings scanSettings;
-    Button btnStop;
-
+    Button btnStop, btnStart;
+    EditText etFileName;
+    Boolean doScan;
     //File Writing stuff
     File gpxfile, root1;
     FileWriter writer;
     String fileName;
     Date now = new Date();
-    SimpleDateFormat  formatter = new SimpleDateFormat("yyyy_MM_dd");
+    SimpleDateFormat  formatter = new SimpleDateFormat("MM.dd.");
+    String uuid, nanoSmartphone, nanoBT;
 
     private List<String> scannedDeivcesList;
     private ArrayAdapter<String> adapter;
@@ -84,69 +78,72 @@ public class ScanActivity extends AppCompatActivity {
 
         //Inicialize de devices list
         scannedDeivcesList = new ArrayList<>();
-
+        doScan = false;
         btnStop = (Button)findViewById(R.id.btnStop);
         btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveFile();
+                stopScanAndSaveFile();
             }
         });
+        btnStart = (Button) findViewById(R.id.btnStart);
+        btnStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startScan();
+            }
+        });
+        etFileName = (EditText) findViewById(R.id.etFileName);
+        etFileName.setText("");
         //Inicialize the list adapter for the listview with params: Context / Layout file / TextView ID in layout file / Devices list
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, scannedDeivcesList);
-
-        //Set the adapter to the listview
-        devicesList.setAdapter(adapter);
 
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        SpannableString s = new SpannableString("Scan beacons");
-
-        s.setSpan(new com.accent_systems.ibkshelloworld.TypefaceSpan(this, "Khand-Bold.ttf"), 0, s.length(),
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        s.setSpan(new ForegroundColorSpan(Color.parseColor("#3a3c3e")), 0, s.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        setTitle(s);
+       
 
         getSupportActionBar().setLogo(R.mipmap.ibks);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
 
-        //initialize file writing stuff
-        checkPermissions();
-        fileName = formatter.format(now) + "TEST.txt";
-        Environment.getExternalStorageDirectory();
-        try{
-            root1 = new File(Environment.getExternalStorageDirectory() +File.separator+"Beacon_Folder", "Data");
-            if(!root1.exists())
-                root1.mkdirs();
-            gpxfile = new File(root1, fileName);
-            writer = new FileWriter(gpxfile, true);
-// root1 = new File(Environment.getExternalStorageDirectory(), "werte");
-//            Log.d(TAG, "onCreate: root1 created 1");
-//            if(!root1.exists()) {
-//                Log.d(TAG, "onCreate: root1 exists 2");
-//                root1.mkdirs();
-//                Log.d(TAG, "onCreate: directories created");
+        
 
-//            gpxfile = new File(root1, "Testwerte");
-//            Log.d(TAG, "onCreate: gpxFile created");
-//            writer = new FileWriter(gpxfile);
-//            Log.d(TAG, "onCreate: Writer initialized");
+    }
+
+    private void startScan() {
+        if( etFileName.getText() != null && !etFileName.getText().toString().equals("")) {
+            //Enable/disable start and stop
+            btnStop.setEnabled(true);
+            btnStart.setEnabled(false);
+            adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, scannedDeivcesList);
+            //Set the adapter to the listview
+            devicesList.setAdapter(adapter);
+
+            //initialize file writing stuff
+            checkPermissions();
+            fileName = etFileName.getText().toString()+"-" + formatter.format(now)+".txt";
+            Environment.getExternalStorageDirectory();
+            try {
+                root1 = new File(Environment.getExternalStorageDirectory() + File.separator + "Beacon_Folder", "Data");
+                if (!root1.exists())
+                    root1.mkdirs();
+                gpxfile = new File(root1, fileName);
+                writer = new FileWriter(gpxfile, true);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            //init Bluetooth adapter
+            initBT();
+            //Start scan of bluetooth devices
+            doScan = true;
+            startLeScan(true);
 
         }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        //init Bluetooth adapter
-        initBT();
-        //Start scan of bluetooth devices
-        startLeScan(true);
-
+        else Toast.makeText(getApplicationContext(), "Kein Dateiname.", Toast.LENGTH_LONG);
     }
 
     private void checkPermissions() {
@@ -161,12 +158,17 @@ public class ScanActivity extends AppCompatActivity {
 
     }
 
-    private void saveFile() {
+    private void stopScanAndSaveFile() {
+        //Enable/disable start stop buttons
 
+        btnStop.setEnabled(false);
+        etFileName.setText("");
         try {
+            doScan = false;
             writer.flush();
             writer.close();
             Toast.makeText(getApplicationContext(), "SAVED", Toast.LENGTH_LONG).show();
+            btnStart.setEnabled(true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -213,6 +215,11 @@ public class ScanActivity extends AppCompatActivity {
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
 
+
+            //Only listen for iBKS devices
+            // if(result.getDevice().getName() != null && result.getDevice().getName().contains("iBKS")){
+
+
             //Here will be received all the detected BLE devices around. "result" contains the device
             //address and name as a BLEPeripheral, the advertising content as a ScanRecord, the Rx RSSI
             //and the timestamp when received. Type result.get... to see all the available methods you can call.
@@ -220,20 +227,27 @@ public class ScanActivity extends AppCompatActivity {
             //Convert advertising bytes to string for a easier parsing. GetBytes may return a NullPointerException. Treat it right(try/catch).
             String advertisingString = byteArrayToHex(result.getScanRecord().getBytes());
             //Print the advertising String in the LOG with other device info (ADDRESS - RSSI - ADVERTISING - NAME)
-            Log.i(TAG, result.getDevice().getAddress()+" - RSSI: "+result.getRssi()+"\t - "+advertisingString+" - "+result.getDevice().getName());
+            Log.i(TAG, result.getDevice().getAddress() + " - RSSI: " + result.getRssi() + "\t - " + advertisingString + " - " + result.getDevice().getName());
 
             //Check if scanned device is already in the list by mac address
             boolean contains = false;
-            for(int i=0; i<scannedDeivcesList.size(); i++){
-                if(scannedDeivcesList.get(i).contains(result.getDevice().getAddress())){
+            for (int i = 0; i < scannedDeivcesList.size(); i++) {
+                if (scannedDeivcesList.get(i).contains(result.getDevice().getAddress())) {
                     //Device already added
                     contains = true;
                     //Replace the device with updated values in that position
-                    scannedDeivcesList.set(i, result.getRssi()+"  "+result.getDevice().getName()+ "\n       ("+result.getDevice().getAddress()+")");
+                    scannedDeivcesList.set(i, result.getRssi() + "  " + result.getDevice().getName() + "\n       (" + result.getDevice().getAddress() + ")");
                     //Write rssi to file!
                     try {
-                        if(result.getDevice().getName() != null && result.getDevice().getName().contains("iBKS"))
-                        writer.append(result.getDevice().getName() + result.getRssi() +"\n");
+                        //getUuid
+                        if (result.getDevice().getUuids() != null) {
+                            uuid = result.getDevice().getUuids()[0].toString();
+                        } else uuid = "null";
+                        //Smartphone-Time and BT-Time
+                        nanoSmartphone = String.valueOf(System.nanoTime());
+                        nanoBT = String.valueOf(result.getTimestampNanos());
+                        writer.append(nanoSmartphone + "," + result.getDevice().getName() + "," + result.getRssi() + "," + nanoBT + "," + uuid + "\n");
+                        //}
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -241,13 +255,20 @@ public class ScanActivity extends AppCompatActivity {
                 }
             }
 
-            if(!contains){
+            if (!contains) {
                 //Scanned device not found in the list. NEW => add to list
-                scannedDeivcesList.add(result.getRssi()+"  "+result.getDevice().getName()+ "\n       ("+result.getDevice().getAddress()+")");
+                scannedDeivcesList.add(result.getRssi() + "  " + result.getDevice().getName() + "\n       (" + result.getDevice().getAddress() + ")");
                 //Write to file
                 try {
-                    if(result.getDevice().getName() != null && result.getDevice().getName().contains("iBKS"))
-                    writer.append(result.getDevice().getName() + result.getRssi() +"\n");
+                    //get uuid
+                    if (result.getDevice().getUuids() != null) {
+                        uuid = result.getDevice().getUuids()[0].toString();
+                    } else uuid = "null";
+                    //Smartphone-Time and BT-Time
+                    nanoSmartphone = String.valueOf(System.nanoTime());
+                    nanoBT = String.valueOf(result.getTimestampNanos());
+                    writer.append(nanoSmartphone + "," + result.getDevice().getName() + "," + result.getRssi() + "," + nanoBT + "," + uuid + "\n");
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -261,6 +282,8 @@ public class ScanActivity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                 }
             });
+
+        //}
 
         }
     };
