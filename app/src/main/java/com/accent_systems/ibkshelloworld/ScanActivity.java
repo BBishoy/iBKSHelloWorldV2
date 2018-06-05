@@ -246,7 +246,7 @@ public class ScanActivity extends AppCompatActivity {
                         //getting Smartphone-Time and BT-Time
                         nanoSmartphone = String.valueOf(System.nanoTime());
                         nanoBT = String.valueOf(result.getTimestampNanos());
-                        writer.append(nanoSmartphone + "," + result.getDevice().getName() + "," + result.getRssi() + "," + nanoBT + "," + uuid + "\n");
+                        writer.append(nanoSmartphone + "," + result.getDevice().getAddress() + "," + result.getRssi() + "," + nanoBT + "," + uuid + "\n");
                         //}
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -257,7 +257,7 @@ public class ScanActivity extends AppCompatActivity {
 
             if (!contains) {
                 //Scanned device not found in the list. NEW => add to list
-                scannedDeivcesList.add(result.getRssi() + "  " + result.getDevice().getName() + "\n       (" + result.getDevice().getAddress() + ")");
+                scannedDeivcesList.add(result.getRssi() + "  " + result.getDevice().getAddress() + "\n       (" + result.getDevice().getAddress() + ")");
                 //Write to file
                 try {
                     //get uuid
