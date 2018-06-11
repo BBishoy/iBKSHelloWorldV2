@@ -38,6 +38,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.math.*;
+import java.util.stream.DoubleStream;
+
+import static java.lang.Math.abs;
 
 public class ScanActivity extends AppCompatActivity {
 
@@ -58,7 +61,19 @@ public class ScanActivity extends AppCompatActivity {
     Date now = new Date();
     SimpleDateFormat  formatter = new SimpleDateFormat("MM.dd.");
     String uuid, nanoSmartphone, nanoBT;
-    int[][] theTable = new int[17][4];
+    //2D-Table for comparing values, arrays with averaged values from measurements
+    List<double[]> theTable = new ArrayList<>();
+    //arrays for received data for each beacon
+    int amountOfMeasurmentsPerBeacon = 10;
+    List<Integer> tmp1 = new ArrayList<>();
+    List<Integer> tmp2 = new ArrayList<>();
+    List<Integer> tmp3 = new ArrayList<>();
+    List<Integer> tmp4 = new ArrayList<>();
+    //MAC-Adresses of used Beacons
+    private static final String macA = "A1";
+    private static final String macB = "B2";
+    private static final String macC = "C3";
+    private static final String macD = "D4";
 
     private List<String> scannedDeivcesList;
     private ArrayAdapter<String> adapter;
@@ -75,7 +90,7 @@ public class ScanActivity extends AppCompatActivity {
         //Define listview in layout
         devicesList = (ListView) findViewById(R.id.devicesList);
         //Setup list on device click listener
-        setupListClickListener();
+        //setupListClickListener();
 
         //Inicialize de devices list
         scannedDeivcesList = new ArrayList<>();
@@ -97,8 +112,143 @@ public class ScanActivity extends AppCompatActivity {
         etFileName = (EditText) findViewById(R.id.etFileName);
         etFileName.setText("");
         //Initialize Table
-
-        //Initialize the list adapter for the listview with params: Context / Layout file / TextView ID in layout file / Devices list
+        //TODO: Add values here
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
+        theTable.add(new double[]{});
 
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -233,49 +383,71 @@ public class ScanActivity extends AppCompatActivity {
             Log.i(TAG, result.getDevice().getAddress() + " - RSSI: " + result.getRssi() + "\t - " + advertisingString + " - " + result.getDevice().getName());
 
             //Check if scanned device is already in the list by mac address
-            boolean contains = false;
-            for (int i = 0; i < scannedDeivcesList.size(); i++) {
-                if (scannedDeivcesList.get(i).contains(result.getDevice().getAddress())) {
-                    //Device already added
-                    contains = true;
+            //boolean contains = false;
+           // for (int i = 0; i < scannedDeivcesList.size(); i++) {
+              //  if (scannedDeivcesList.get(i).contains(result.getDevice().getAddress())) {
+                   // contains = true;
                     //Replace the device with updated values in that position
-                    scannedDeivcesList.set(i, result.getRssi() + "  " + result.getDevice().getName() + "\n       (" + result.getDevice().getAddress() + ")");
+                 //   scannedDeivcesList.set(i, result.getRssi() + "  " + result.getDevice().getName() + "\n       (" + result.getDevice().getAddress() + ")");
+
                     //Write rssi to file!
                     try {
-                        //getUuid
-                        if (result.getDevice().getUuids() != null) {
-                            uuid = result.getDevice().getUuids()[0].toString();
-                        } else uuid = "null";
                         //getting Smartphone-Time and BT-TImemmm
-                        nanoSmartphone = String.valueOf(System.nanoTime());
-                        nanoBT = String.valueOf(result.getTimestampNanos());
-                        writer.append(nanoSmartphone + "," + result.getDevice().getAddress() + "," + result.getRssi() + "," + nanoBT + "," + uuid + "\n");
+//                        nanoSmartphone = String.valueOf(System.nanoTime());
+//                        nanoBT = String.valueOf(result.getTimestampNanos());
+                        if(tmp1.size() == amountOfMeasurmentsPerBeacon || tmp2.size() == amountOfMeasurmentsPerBeacon || tmp3.size() == amountOfMeasurmentsPerBeacon || tmp4.size() == amountOfMeasurmentsPerBeacon)
+                            checkPosition(getAverage(tmp1), getAverage(tmp2), getAverage(tmp3), getAverage(tmp4));
+                        else
+                        {
+                            int rssi = result.getRssi();
+                            switch (result.getDevice().getAddress()){
+                                case macA:
+                                    tmp1.add(rssi);
+                                    break;
+                                case macB:
+                                    tmp2.add(rssi);
+                                    break;
+                                case macC:
+                                    tmp2.add(rssi);
+                                    break;
+                                case macD:
+                                    tmp2.add(rssi);
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                        }
+
+                        writer.append(nanoSmartphone + "," + result.getDevice().getAddress() + "," + result.getRssi() + "," + nanoBT + "," + "\n");
                         //}
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    break;
-                }
-            }
 
-            if (!contains) {
-                //Scanned device not found in the list. NEW => add to list
-                scannedDeivcesList.add(result.getRssi() + "  " + result.getDevice().getAddress() + "\n       (" + result.getDevice().getAddress() + ")");
-                //Write to file
-                try {
-                    //get uuid
-                    if (result.getDevice().getUuids() != null) {
-                        uuid = result.getDevice().getUuids()[0].toString();
-                    } else uuid = "null";
-                    //Smartphone-Time and BT-Time
-                    nanoSmartphone = String.valueOf(System.nanoTime());
-                    nanoBT = String.valueOf(result.getTimestampNanos());
-                    writer.append(nanoSmartphone + "," + result.getDevice().getName() + "," + result.getRssi() + "," + nanoBT + "," + uuid + "\n");
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+                   // break;
+              //  }
+           // }
+
+//            if (!contains) {
+//                //Scanned device not found in the list. NEW => add to list
+//                scannedDeivcesList.add(result.getRssi() + "  " + result.getDevice().getAddress() + "\n       (" + result.getDevice().getAddress() + ")");
+//                //Write to file
+//                try {
+//                    //get uuid
+//                    if (result.getDevice().getUuids() != null) {
+//                        uuid = result.getDevice().getUuids()[0].toString();
+//                    } else uuid = "null";
+//                    //Smartphone-Time and BT-Time
+//                    nanoSmartphone = String.valueOf(System.nanoTime());
+//                    nanoBT = String.valueOf(result.getTimestampNanos());
+//                    writer.append(nanoSmartphone + "," + result.getDevice().getName() + "," + result.getRssi() + "," + nanoBT + "," + uuid + "\n");
+//
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
 
             //After modify the list, notify the adapter that changes have been made so it updates the UI.
             //UI changes must be done in the main thread
@@ -290,6 +462,40 @@ public class ScanActivity extends AppCompatActivity {
 
         }
     };
+    //this compares the averaged measure-values with the ones in THE TABLE
+    private int[] checkPosition(double a, double b, double c, double d)
+    {
+        double tmpSubstraction;
+        double smallestSubstraction = 500; //this number will change when a smaller substraction is found
+        int[] calculatedPosition = new int[2];
+        calculatedPosition[0] = -1;
+        calculatedPosition[1] = -1;
+        for (int point = 0; point < theTable.size(); point++) {//addiere die differenzen
+                tmpSubstraction = abs(theTable.get(point)[0] - a);
+                tmpSubstraction += abs(theTable.get(point)[1] - b);
+                tmpSubstraction += abs(theTable.get(point)[2] - c);
+                tmpSubstraction += abs(theTable.get(point)[3] - d);
+                if (tmpSubstraction < smallestSubstraction) { //wenn die Gesamtdifferenz kleiner ist als die bisherige kleinste
+                    smallestSubstraction = tmpSubstraction;
+                }
+        }
+        //TODO: get position
+
+        return calculatedPosition;
+    }
+
+    //this gets the average value of measured measurments
+    private double getAverage(List<Integer> tmp) {
+        Integer sum = 0;
+        if (!tmp.isEmpty()) {
+
+            for (Integer rs : tmp) {
+                sum += rs;
+            }
+            return sum.doubleValue() / tmp.size();
+        }
+        return sum;
+    }
 
     //Method to convert a byte array to a HEX. string.
     private String byteArrayToHex(byte[] a) {
@@ -299,41 +505,41 @@ public class ScanActivity extends AppCompatActivity {
         return sb.toString();
     }
 
-    void setupListClickListener(){
-        devicesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Stop the scan
-                Log.i(TAG, "SCAN STOPED");
-                scanner.stopScan(mScanCallback);
-
-                //Get the string from the item clicked
-                String fullString = scannedDeivcesList.get(position);
-                //Get only the address from the previous string. Substring from '(' to ')'
-                String address = fullString.substring(fullString.indexOf("(")+1, fullString.indexOf(")"));
-                //Get BLE device with address
-                BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
-                //******************************
-                //START CONNECTION WITH DEVICE AND DECLARE GATT
-                //******************************
-                Log.i(TAG,"*************************************************");
-                Log.i(TAG, "CONNECTION STARTED TO DEVICE "+address);
-                Log.i(TAG,"*************************************************");
-
-                //ConnectGatt parameters are CONTEXT / AUTOCONNECT to connect the next time it is scanned / GATT CALLBACK to receive GATT notifications and data
-                // Note: On Samsung devices, the connection must be done on main thread
-                mBluetoothGatt = device.connectGatt(ScanActivity.this, false, mGattCallback);
-
-                /*
-                There is also another simplest way to connect to a device. If you already stored
-                the device in a list (List<BluetoothDevice>) you can retrieve it directly and
-                connect to it:
-
-                mBluetoothGatt = mList.get(position).connectGatt(MainActivity.this, false, mGattCallback);
-                 */
-            }
-        });
-    }
+//    void setupListClickListener(){
+//        devicesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                //Stop the scan
+//                Log.i(TAG, "SCAN STOPED");
+//                scanner.stopScan(mScanCallback);
+//
+//                //Get the string from the item clicked
+//                String fullString = scannedDeivcesList.get(position);
+//                //Get only the address from the previous string. Substring from '(' to ')'
+//                String address = fullString.substring(fullString.indexOf("(")+1, fullString.indexOf(")"));
+//                //Get BLE device with address
+//                BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+//                //******************************
+//                //START CONNECTION WITH DEVICE AND DECLARE GATT
+//                //******************************
+//                Log.i(TAG,"*************************************************");
+//                Log.i(TAG, "CONNECTION STARTED TO DEVICE "+address);
+//                Log.i(TAG,"*************************************************");
+//
+//                //ConnectGatt parameters are CONTEXT / AUTOCONNECT to connect the next time it is scanned / GATT CALLBACK to receive GATT notifications and data
+//                // Note: On Samsung devices, the connection must be done on main thread
+//                mBluetoothGatt = device.connectGatt(ScanActivity.this, false, mGattCallback);
+//
+//                /*
+//                There is also another simplest way to connect to a device. If you already stored
+//                the device in a list (List<BluetoothDevice>) you can retrieve it directly and
+//                connect to it:
+//
+//                mBluetoothGatt = mList.get(position).connectGatt(MainActivity.this, false, mGattCallback);
+//                 */
+//            }
+//        });
+//    }
 
     //Connection callback
     BluetoothGattCallback mGattCallback =
