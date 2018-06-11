@@ -58,6 +58,7 @@ public class ScanActivity extends AppCompatActivity {
     Date now = new Date();
     SimpleDateFormat  formatter = new SimpleDateFormat("MM.dd.");
     String uuid, nanoSmartphone, nanoBT;
+    int[][] theTable = new int[17][4];
 
     private List<String> scannedDeivcesList;
     private ArrayAdapter<String> adapter;
@@ -95,7 +96,9 @@ public class ScanActivity extends AppCompatActivity {
         });
         etFileName = (EditText) findViewById(R.id.etFileName);
         etFileName.setText("");
-        //Inicialize the list adapter for the listview with params: Context / Layout file / TextView ID in layout file / Devices list
+        //Initialize Table
+
+        //Initialize the list adapter for the listview with params: Context / Layout file / TextView ID in layout file / Devices list
 
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
