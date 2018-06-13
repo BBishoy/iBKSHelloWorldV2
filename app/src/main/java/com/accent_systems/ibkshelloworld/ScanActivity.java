@@ -183,7 +183,6 @@ public class ScanActivity extends AppCompatActivity {
         theTable.add(new double[]{-88.89051095,-88.28790199,-86.08384146,-88.56515152});
         theTable.add(new double[]{-88.68794326,-84.31206657,-88.45441595,-86.26359833});
         theTable.add(new double[]{-89.9318542,-85.98521257,-87.84722222,-86.65968586});
-        theTable.add(new double[]{-89.9318542,-85.98521257,-87.84722222,-86.65968586});
         theTable.add(new double[]{-88.83298097,-86.54545455,-89.66736842,-81.73752711});
         theTable.add(new double[]{-89.7512275,-89.77793696,-88.76171875,-85.46507353});
         // I 1-8
