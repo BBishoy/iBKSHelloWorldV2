@@ -27,7 +27,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridLayout;
+import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -40,6 +43,8 @@ import java.util.List;
 import java.math.*;
 import java.util.stream.DoubleStream;
 
+import static android.graphics.Color.BLUE;
+import static android.graphics.Color.GRAY;
 import static java.lang.Math.abs;
 
 public class ScanActivity extends AppCompatActivity {
@@ -63,6 +68,7 @@ public class ScanActivity extends AppCompatActivity {
     String uuid, nanoSmartphone, nanoBT;
     //2D-Table for comparing values, arrays with averaged values from measurements
     List<double[]> theTable = new ArrayList<>();
+    GridLayout gridMap;
     //arrays for received data for each beacon
     int amountOfMeasurmentsPerBeacon = 10;
     List<Integer> tmp1 = new ArrayList<>();
@@ -85,6 +91,8 @@ public class ScanActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_scan);
 
         //Define listview in layout
@@ -109,12 +117,16 @@ public class ScanActivity extends AppCompatActivity {
                 startScan();
             }
         });
+        gridMap = (GridLayout) findViewById(R.id.gridMap);
+       View view = gridMap.getChildAt(15);
+        TextView tv = (TextView) view;
+        tv.setBackgroundColor(BLUE);
         etFileName = (EditText) findViewById(R.id.etFileName);
         etFileName.setText("");
         //Initialize Table
         //TODO: Add values here
         //A 1-8
-        theTable.add(new double[]{-89.08441558,-83.0474934,-59,.9166667,-91.24621212});
+        theTable.add(new double[]{-89.08441558,-83.0474934,-59.9166667,-91.24621212});
         theTable.add(new double[]{-93.07643312,-77.22012579,-69.34795764,-92.37359551});
         theTable.add(new double[]{-93.33766234,-79.17412935,-72.9093702,-91.94315245});
         theTable.add(new double[]{-89.82852807,-79.63456091,-77.94796062,-91.28343949});
@@ -239,33 +251,33 @@ public class ScanActivity extends AppCompatActivity {
         theTable.add(new double[]{-87.58727811,-93.55525606,-90.55102041,-86.66960352});
         theTable.add(new double[]{-79.21369863,-89.345,-87.51560178,-83.09264305});
         theTable.add(new double[]{-86.49361702,-93.56071429,-93.30627306,-82.16305916});
-        //O 1-6
-        theTable.add(new double[]{});
-        theTable.add(new double[]{});
-        theTable.add(new double[]{});
-        theTable.add(new double[]{});
-        theTable.add(new double[]{});
-        theTable.add(new double[]{});
-        theTable.add(new double[]{});
-        theTable.add(new double[]{});
-        //P1-8
-        theTable.add(new double[]{-86.68421053,-92.92033898,-90.1686747,-76.33541927});
-        theTable.add(new double[]{-88.88300221,-91.34579439,-84.97864769,-78.00168067});
-        theTable.add(new double[]{-83.21587302,-92.53971963,-89.22586207,-77.32403101});
-        theTable.add(new double[]{-87.63867188,-90.69154229,-91.09810671,-80.21963394});
-        theTable.add(new double[]{-84.40606061,-90.32453416,-90.78978979,-84.49423394});
-        theTable.add(new double[]{-85.14710042,-92.48281016,-90.95601173,-77.61126374});
-        theTable.add(new double[]{-81.09090909,-92.11897106,-89.99634369,-84.74007682});
-        theTable.add(new double[]{-76.37837838,-86.89516129,-93.28764479,-83.67464789});
-        //Q 1-8
-        theTable.add(new double[]{-84.42527174,-91.45720251,-90.62550607,-69.63471503});
-        theTable.add(new double[]{-81.54783748,-89.78719397,-88.29634831,-73.67399741});
-        theTable.add(new double[]{-86.12250333,-90.11764706,-91.17771509,-75.87580026});
-        theTable.add(new double[]{-82.54248366,-91.88940092,-86.66568483,-77.9626556});
-        theTable.add(new double[]{-82.88027211,-88.35515873,-88.75280899,-79.3032345});
-        theTable.add(new double[]{-82.54248366,-91.88940092,-86.66568483,-77.9626556});
-        theTable.add(new double[]{-82.59801136,-86.69845722,-87.8772242,-84.84366197});
-        theTable.add(new double[]{-79.1179941,-93.50331126,-90.29069767,-81.73109244});
+//        //O 1-6
+//        theTable.add(new double[]{});
+//        theTable.add(new double[]{});
+//        theTable.add(new double[]{});
+//        theTable.add(new double[]{});
+//        theTable.add(new double[]{});
+//        theTable.add(new double[]{});
+//        theTable.add(new double[]{});
+//        theTable.add(new double[]{});
+//        //P1-8
+//        theTable.add(new double[]{-86.68421053,-92.92033898,-90.1686747,-76.33541927});
+//        theTable.add(new double[]{-88.88300221,-91.34579439,-84.97864769,-78.00168067});
+//        theTable.add(new double[]{-83.21587302,-92.53971963,-89.22586207,-77.32403101});
+//        theTable.add(new double[]{-87.63867188,-90.69154229,-91.09810671,-80.21963394});
+//        theTable.add(new double[]{-84.40606061,-90.32453416,-90.78978979,-84.49423394});
+//        theTable.add(new double[]{-85.14710042,-92.48281016,-90.95601173,-77.61126374});
+//        theTable.add(new double[]{-81.09090909,-92.11897106,-89.99634369,-84.74007682});
+//        theTable.add(new double[]{-76.37837838,-86.89516129,-93.28764479,-83.67464789});
+//        //Q 1-8
+//        theTable.add(new double[]{-84.42527174,-91.45720251,-90.62550607,-69.63471503});
+//        theTable.add(new double[]{-81.54783748,-89.78719397,-88.29634831,-73.67399741});
+//        theTable.add(new double[]{-86.12250333,-90.11764706,-91.17771509,-75.87580026});
+//        theTable.add(new double[]{-82.54248366,-91.88940092,-86.66568483,-77.9626556});
+//        theTable.add(new double[]{-82.88027211,-88.35515873,-88.75280899,-79.3032345});
+//        theTable.add(new double[]{-82.54248366,-91.88940092,-86.66568483,-77.9626556});
+//        theTable.add(new double[]{-82.59801136,-86.69845722,-87.8772242,-84.84366197});
+//        theTable.add(new double[]{-79.1179941,-93.50331126,-90.29069767,-81.73109244});
 
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -480,13 +492,12 @@ public class ScanActivity extends AppCompatActivity {
         }
     };
     //this compares the averaged measure-values with the ones in THE TABLE
-    private int[] checkPosition(double a, double b, double c, double d)
+    private int checkPosition(double a, double b, double c, double d)
     {
         double tmpSubstraction;
         double smallestSubstraction = 500; //this number will change when a smaller substraction is found
-        int[] calculatedPosition = new int[2];
-        calculatedPosition[0] = -1;
-        calculatedPosition[1] = -1;
+        int position = 0; //this will be the calculated pos.
+
         for (int point = 0; point < theTable.size(); point++) {//addiere die differenzen
                 tmpSubstraction = abs(theTable.get(point)[0] - a);
                 tmpSubstraction += abs(theTable.get(point)[1] - b);
@@ -494,11 +505,11 @@ public class ScanActivity extends AppCompatActivity {
                 tmpSubstraction += abs(theTable.get(point)[3] - d);
                 if (tmpSubstraction < smallestSubstraction) { //wenn die Gesamtdifferenz kleiner ist als die bisherige kleinste
                     smallestSubstraction = tmpSubstraction;
+                    position = point;
                 }
         }
-        //TODO: get position
 
-        return calculatedPosition;
+        return position;
     }
 
     //this gets the average value of measured measurments
