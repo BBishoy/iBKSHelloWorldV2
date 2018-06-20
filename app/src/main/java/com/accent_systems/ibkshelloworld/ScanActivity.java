@@ -43,6 +43,7 @@ import java.util.List;
 import java.math.*;
 import java.util.stream.DoubleStream;
 
+import static android.graphics.Color.BLACK;
 import static android.graphics.Color.BLUE;
 import static android.graphics.Color.GRAY;
 import static java.lang.Math.abs;
@@ -56,8 +57,7 @@ public class ScanActivity extends AppCompatActivity {
     BluetoothGatt mBluetoothGatt;
     BluetoothLeScanner scanner;
     ScanSettings scanSettings;
-    Button btnStop, btnStart;
-    EditText etFileName;
+    int pos;
     Boolean doScan;
     //File Writing stuff
     File gpxfile, root1;
@@ -70,16 +70,16 @@ public class ScanActivity extends AppCompatActivity {
     List<double[]> theTable = new ArrayList<>();
     GridLayout gridMap;
     //arrays for received data for each beacon
-    int amountOfMeasurmentsPerBeacon = 10;
+    int amountOfMeasurmentsPerBeacon = 20;
     List<Integer> tmp1 = new ArrayList<>();
     List<Integer> tmp2 = new ArrayList<>();
     List<Integer> tmp3 = new ArrayList<>();
     List<Integer> tmp4 = new ArrayList<>();
     //MAC-Adresses of used Beacons
-    private static final String macA = "A1";
-    private static final String macB = "B2";
-    private static final String macC = "C3";
-    private static final String macD = "D4";
+    private static final String macA = "C2:54:B9:63:3D:E8";
+    private static final String macB = "CD:88:84:0C:4D:B6";
+    private static final String macC = "E8:42:65:9B:2D:64";
+    private static final String macD = "E9:CD:7D:C3:57:FE";
 
     private List<String> scannedDeivcesList;
     private ArrayAdapter<String> adapter;
@@ -91,10 +91,7 @@ public class ScanActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         setContentView(R.layout.activity_scan);
-
         //Define listview in layout
         devicesList = (ListView) findViewById(R.id.devicesList);
         //Setup list on device click listener
@@ -103,26 +100,24 @@ public class ScanActivity extends AppCompatActivity {
         //Inicialize de devices list
         scannedDeivcesList = new ArrayList<>();
         doScan = false;
-        btnStop = (Button)findViewById(R.id.btnStop);
-        btnStop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                stopScanAndSaveFile();
-            }
-        });
-        btnStart = (Button) findViewById(R.id.btnStart);
-        btnStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startScan();
-            }
-        });
-        gridMap = (GridLayout) findViewById(R.id.gridMap);
-       View view = gridMap.getChildAt(15);
-        TextView tv = (TextView) view;
-        tv.setBackgroundColor(BLUE);
-        etFileName = (EditText) findViewById(R.id.etFileName);
-        etFileName.setText("");
+//        btnStop = (Button)findViewById(R.id.btnStop);
+//        btnStop.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                stopScanAndSaveFile();
+//            }
+//        });
+//        btnStart = (Button) findViewById(R.id.btnStart);
+//        btnStart.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startScan();
+//            }
+//        });
+//        gridMap = (GridLayout) findViewById(R.id.gridMap);
+//       View view = gridMap.getChildAt(15);
+//        TextView tv = (TextView) view;
+//        tv.setBackgroundColor(BLUE);
         //Initialize Table
         //TODO: Add values here
         //A 1-8
@@ -288,35 +283,37 @@ public class ScanActivity extends AppCompatActivity {
         getSupportActionBar().setLogo(R.mipmap.ibks);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
+        startScan();
 
         
 
     }
 
     private void startScan() {
-        if( etFileName.getText() != null && !etFileName.getText().toString().equals("")) {
+      //  if( etFileName.getText() != null && !etFileName.getText().toString().equals("")) {
             //Enable/disable start and stop
-            btnStop.setEnabled(true);
-            btnStart.setEnabled(false);
+            /*btnStop.setEnabled(true);
+            btnStart.setEnabled(false);*/
+
+
             adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, scannedDeivcesList);
             //Set the adapter to the listview
             devicesList.setAdapter(adapter);
 
             //initialize file writing stuff
             checkPermissions();
-            fileName = etFileName.getText().toString()+"-" + formatter.format(now)+".txt";
-            Environment.getExternalStorageDirectory();
-            try {
-                root1 = new File(Environment.getExternalStorageDirectory() + File.separator + "Beacon_Folder", "Data");
-                if (!root1.exists())
-                    root1.mkdirs();
-                gpxfile = new File(root1, fileName);
-                writer = new FileWriter(gpxfile, true);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+          //  fileName = etFileName.getText().toString()+"-" + formatter.format(now)+".txt";
+        //    Environment.getExternalStorageDirectory();
+//            try {
+//                root1 = new File(Environment.getExternalStorageDirectory() + File.separator + "Beacon_Folder", "Data");
+//                if (!root1.exists())
+//                    root1.mkdirs();
+//                gpxfile = new File(root1, fileName);
+//                writer = new FileWriter(gpxfile, true);
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
 
             //init Bluetooth adapter
             initBT();
@@ -324,8 +321,7 @@ public class ScanActivity extends AppCompatActivity {
             doScan = true;
             startLeScan(true);
 
-        }
-        else Toast.makeText(getApplicationContext(), "Kein Dateiname.", Toast.LENGTH_LONG);
+
     }
 
     private void checkPermissions() {
@@ -343,14 +339,11 @@ public class ScanActivity extends AppCompatActivity {
     private void stopScanAndSaveFile() {
         //Enable/disable start stop buttons
 
-        btnStop.setEnabled(false);
-        etFileName.setText("");
         try {
             doScan = false;
             writer.flush();
             writer.close();
             Toast.makeText(getApplicationContext(), "SAVED", Toast.LENGTH_LONG).show();
-            btnStart.setEnabled(true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -397,50 +390,50 @@ public class ScanActivity extends AppCompatActivity {
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
 
-
-            //Only listen for iBKS devices
-            if(result.getDevice().getName() != null && result.getDevice().getName().contains("iBKS")){
-
-
-            //Here will be received all the detected BLE devices around. "result" contains the device
-            //address and name as a BLEPeripheral, the advertising content as a ScanRecord, the Rx RSSI
-            //and the timestamp when received. Type result.get... to see all the available methods you can call.
-
-            //Convert advertising bytes to string for a easier parsing. GetBytes may return a NullPointerException. Treat it right(try/catch).
-            String advertisingString = byteArrayToHex(result.getScanRecord().getBytes());
-            //Print the advertising String in the LOG with other device info (ADDRESS - RSSI - ADVERTISING - NAME)
-            Log.i(TAG, result.getDevice().getAddress() + " - RSSI: " + result.getRssi() + "\t - " + advertisingString + " - " + result.getDevice().getName());
-
-            //Check if scanned device is already in the list by mac address
-            //boolean contains = false;
-           // for (int i = 0; i < scannedDeivcesList.size(); i++) {
-              //  if (scannedDeivcesList.get(i).contains(result.getDevice().getAddress())) {
-                   // contains = true;
-                    //Replace the device with updated values in that position
-                 //   scannedDeivcesList.set(i, result.getRssi() + "  " + result.getDevice().getName() + "\n       (" + result.getDevice().getAddress() + ")");
-
-                    //Write rssi to file!
                     try {
                         //getting Smartphone-Time and BT-TImemmm
 //                        nanoSmartphone = String.valueOf(System.nanoTime());
 //                        nanoBT = String.valueOf(result.getTimestampNanos());
-                        if(tmp1.size() == amountOfMeasurmentsPerBeacon || tmp2.size() == amountOfMeasurmentsPerBeacon || tmp3.size() == amountOfMeasurmentsPerBeacon || tmp4.size() == amountOfMeasurmentsPerBeacon)
-                            checkPosition(getAverage(tmp1), getAverage(tmp2), getAverage(tmp3), getAverage(tmp4));
-                        else
-                        {
+                        if(tmp1.size() >= amountOfMeasurmentsPerBeacon || tmp2.size() >= amountOfMeasurmentsPerBeacon || tmp3.size() >= amountOfMeasurmentsPerBeacon || tmp4.size() >= amountOfMeasurmentsPerBeacon) {
+//                            View view = gridMap.getChildAt(pos);
+//                            TextView tv = (TextView) view;
+//                            tv.setBackgroundColor(BLACK);
+                            pos = checkPosition(getAverage(tmp1), getAverage(tmp2), getAverage(tmp3), getAverage(tmp4));
+                            View view = gridMap.getChildAt(pos);
+                            TextView tv = (TextView) view;
+                            tv.setBackgroundColor(BLUE);
+                            tmp1.clear();
+                            tmp2.clear();
+                            tmp3.clear();
+                            tmp4.clear();
+                        }
+//
+//
+                       else{
+
+                        Log.e(TAG, "SCANRESULT ERHALTEN!!:" + result.getDevice().getAddress());
+                            Toast.makeText(getApplicationContext(), result.getDevice().getAddress(), Toast.LENGTH_SHORT);
                             int rssi = result.getRssi();
-                            switch (result.getDevice().getAddress()){
-                                case macA:
+                            String adresse = result.getDevice().getAddress();
+                            switch (adresse){
+                                case "C2:54:B9:63:3D:E8":
+                                    Log.e(TAG, "111111");
                                     tmp1.add(rssi);
                                     break;
-                                case macB:
+                                case "CD:88:84:0C:4D:B6":
+                                    Log.e(TAG, "22222");
+                                    Toast.makeText(getApplicationContext(), "2", Toast.LENGTH_SHORT);
                                     tmp2.add(rssi);
                                     break;
-                                case macC:
-                                    tmp2.add(rssi);
+                                case "E8:42:65:9B:2D:64":
+                                    Log.e(TAG, "33333");
+                                    Toast.makeText(getApplicationContext(), "3", Toast.LENGTH_SHORT);
+                                    tmp3.add(rssi);
                                     break;
-                                case macD:
-                                    tmp2.add(rssi);
+                                case "E9:CD:7D:C3:57:FE":
+                                    Log.e(TAG, "4444444");
+                                    Toast.makeText(getApplicationContext(), "4", Toast.LENGTH_SHORT);
+                                    tmp4.add(rssi);
                                     break;
                                 default:
                                     break;
@@ -448,9 +441,9 @@ public class ScanActivity extends AppCompatActivity {
 
                         }
 
-                        writer.append(nanoSmartphone + "," + result.getDevice().getAddress() + "," + result.getRssi() + "," + nanoBT + "," + "\n");
+                        //writer.append(nanoSmartphone + "," + result.getDevice().getAddress() + "," + result.getRssi() + "," + nanoBT + "," + "\n");
                         //}
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -487,7 +480,7 @@ public class ScanActivity extends AppCompatActivity {
                 }
             });
 
-        }
+        //}
 
         }
     };
