@@ -58,6 +58,8 @@ public class ScanActivity extends AppCompatActivity {
     BluetoothLeScanner scanner;
     ScanSettings scanSettings;
     int pos;
+    View view;
+    TextView tv;
     Boolean doScan;
     //File Writing stuff
     File gpxfile, root1;
@@ -70,7 +72,7 @@ public class ScanActivity extends AppCompatActivity {
     List<double[]> theTable = new ArrayList<>();
     GridLayout gridMap;
     //arrays for received data for each beacon
-    int amountOfMeasurmentsPerBeacon = 20;
+    int amountOfMeasurmentsPerBeacon = 10;
     List<Integer> tmp1 = new ArrayList<>();
     List<Integer> tmp2 = new ArrayList<>();
     List<Integer> tmp3 = new ArrayList<>();
@@ -336,19 +338,19 @@ public class ScanActivity extends AppCompatActivity {
 
     }
 
-    private void stopScanAndSaveFile() {
-        //Enable/disable start stop buttons
-
-        try {
-            doScan = false;
-            writer.flush();
-            writer.close();
-            Toast.makeText(getApplicationContext(), "SAVED", Toast.LENGTH_LONG).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
+//    private void stopScanAndSaveFile() {
+//        //Enable/disable start stop buttons
+//
+//        try {
+//            doScan = false;
+//            writer.flush();
+//            writer.close();
+//            Toast.makeText(getApplicationContext(), "SAVED", Toast.LENGTH_LONG).show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
 
     @Override
     protected void onStop() {
@@ -390,17 +392,14 @@ public class ScanActivity extends AppCompatActivity {
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
 
-                    try {
-                        //getting Smartphone-Time and BT-TImemmm
-//                        nanoSmartphone = String.valueOf(System.nanoTime());
-//                        nanoBT = String.valueOf(result.getTimestampNanos());
+                    try {//Wenn in jeder Liste genug elemente vorhanden sind
                         if(tmp1.size() >= amountOfMeasurmentsPerBeacon || tmp2.size() >= amountOfMeasurmentsPerBeacon || tmp3.size() >= amountOfMeasurmentsPerBeacon || tmp4.size() >= amountOfMeasurmentsPerBeacon) {
-//                            View view = gridMap.getChildAt(pos);
-//                            TextView tv = (TextView) view;
-//                            tv.setBackgroundColor(BLACK);
+//
+                            tv.setBackgroundColor(BLACK); //altes feld wieder schwarz machen
+                            //neue position ermitteln
                             pos = checkPosition(getAverage(tmp1), getAverage(tmp2), getAverage(tmp3), getAverage(tmp4));
-                            View view = gridMap.getChildAt(pos);
-                            TextView tv = (TextView) view;
+                            view = gridMap.getChildAt(pos);
+                            tv = (TextView) view;
                             tv.setBackgroundColor(BLUE);
                             tmp1.clear();
                             tmp2.clear();
@@ -410,28 +409,31 @@ public class ScanActivity extends AppCompatActivity {
 //
 //
                        else{
-
-                        Log.e(TAG, "SCANRESULT ERHALTEN!!:" + result.getDevice().getAddress());
+                            //scanresult erhalten!
+                            Log.e(TAG, "SCANRESULT ERHALTEN!!:" + result.getDevice().getAddress());
                             Toast.makeText(getApplicationContext(), result.getDevice().getAddress(), Toast.LENGTH_SHORT);
+                            //rssi nehmen
                             int rssi = result.getRssi();
+                            //mac adresse holen
                             String adresse = result.getDevice().getAddress();
+
                             switch (adresse){
                                 case "C2:54:B9:63:3D:E8":
-                                    Log.e(TAG, "111111");
+                                    Log.e(TAG, "Found Beacon 1");
                                     tmp1.add(rssi);
                                     break;
                                 case "CD:88:84:0C:4D:B6":
-                                    Log.e(TAG, "22222");
+                                    Log.e(TAG, "Found Beacon 2");
                                     Toast.makeText(getApplicationContext(), "2", Toast.LENGTH_SHORT);
                                     tmp2.add(rssi);
                                     break;
                                 case "E8:42:65:9B:2D:64":
-                                    Log.e(TAG, "33333");
+                                    Log.e(TAG, "Found Beacon 3");
                                     Toast.makeText(getApplicationContext(), "3", Toast.LENGTH_SHORT);
                                     tmp3.add(rssi);
                                     break;
                                 case "E9:CD:7D:C3:57:FE":
-                                    Log.e(TAG, "4444444");
+                                    Log.e(TAG, "Found Beacon 4");
                                     Toast.makeText(getApplicationContext(), "4", Toast.LENGTH_SHORT);
                                     tmp4.add(rssi);
                                     break;
