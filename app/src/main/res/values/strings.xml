@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">iBKS Hello World</string>
+    <string name="app_name">FAIR GUIDE</string>
     <string name="title_activity_scan">ScanActivity</string>
     <string name="title_activity_notification">NotificationDemo</string>
 
