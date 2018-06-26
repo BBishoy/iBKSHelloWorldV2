@@ -397,7 +397,7 @@ public class ScanActivity extends AppCompatActivity {
                                 removeHighestValues(tmpListBeacon3);
                                 removeHighestValues(tmpListBeacon4);
                             }
-                            //die Werte mitteln
+                            //die Werte mitteln und position ermitteln
                             averagedValue1 = getAverage(tmpListBeacon1);
                             averagedValue2 = getAverage(tmpListBeacon2);
                             averagedValue3 = getAverage(tmpListBeacon3);
