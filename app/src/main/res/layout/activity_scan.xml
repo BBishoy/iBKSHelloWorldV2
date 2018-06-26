@@ -5,10 +5,31 @@
     android:layout_height="match_parent"
     tools:context="com.accent_systems.ibkshelloworld.MainActivity">
 
-    <ListView
-        android:id="@+id/devicesList"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"/>
+    <!--<ListView-->
+        <!--android:id="@+id/devicesList"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dp"/>-->
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <RadioButton
+            android:id="@+id/rbAverage"
+            android:text="Average"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"/>
+        <RadioButton
+            android:id="@+id/rbRemoveHighestValues"
+            android:text="Remove Highest Values"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <RadioButton
+            android:id="@+id/rbRemoveBeacon"
+            android:text="Remove One Beacon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RadioGroup>
 
         <GridLayout
             android:id="@+id/gridMap"
@@ -19,6 +40,8 @@
             android:columnCount="8"
             android:rowCount="17"
             >
+
+
 
             <TextView android:layout_width="25dp" android:layout_height="25dp" android:background="#121212"/>
             <TextView android:layout_width="25dp" android:layout_height="25dp" android:background="#121212"/>
@@ -157,6 +180,8 @@
             <TextView android:layout_width="25dp" android:layout_height="25dp" android:background="#121212"/>
             <TextView android:layout_width="25dp" android:layout_height="25dp" android:background="#121212"/>
         </GridLayout>
+
+
 
 
     <!--<EditText-->
