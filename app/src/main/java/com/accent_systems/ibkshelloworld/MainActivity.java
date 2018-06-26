@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         notif = (TextView) findViewById(R.id.notifTV);
      //   notif.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Khand-Bold.ttf"));
 
-        SpannableString s = new SpannableString("iBKS Hello World");
+        SpannableString s = new SpannableString("Fair Guide");
 
       //  s.setSpan(new com.accent_systems.ibkshelloworld.TypefaceSpan(this,"Khand-Bold.ttf"), 0, s.length(),
               //  Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
