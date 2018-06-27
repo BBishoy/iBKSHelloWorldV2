@@ -34,6 +34,8 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -76,7 +78,7 @@ public class ScanActivity extends AppCompatActivity {
     GridLayout gridMap;
     RadioButton rbAverage, rbRemoveHighestValues, rbRemoveBeacon;
     //arrays for received data for each beacon
-    int amountOfMeasurmentsPerBeacon = 20;
+    int amountOfMeasurmentsPerBeacon = 10;
     List<Integer> tmpListBeacon1 = new ArrayList<>();
     List<Integer> tmpListBeacon2 = new ArrayList<>();
     List<Integer> tmpListBeacon3 = new ArrayList<>();
@@ -87,7 +89,7 @@ public class ScanActivity extends AppCompatActivity {
     private static final String macB = "D3:E0:BC:94:3C:07";
     private static final String macC = "E8:42:65:9B:2D:64";
     private static final String macD = "E9:CD:7D:C3:57:FE";
-
+    TextView tvPosition;
     private List<String> scannedDeivcesList;
     private ArrayAdapter<String> adapter;
 
@@ -108,7 +110,7 @@ public class ScanActivity extends AppCompatActivity {
         rbAverage = (RadioButton) findViewById(R.id.rbAverage);
         rbRemoveHighestValues = (RadioButton) findViewById(R.id.rbRemoveHighestValues);
         rbRemoveBeacon = (RadioButton) findViewById(R.id.rbRemoveBeacon);
-
+        tvPosition = (TextView) findViewById(R.id.tvPosition);
 //       View view = gridMap.getChildAt(15);
 //        TextView tv = (TextView) view;
 //        tv.setBackgroundColor(BLUE);
@@ -292,7 +294,7 @@ public class ScanActivity extends AppCompatActivity {
 
             adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, scannedDeivcesList);
             //Set the adapter to the listview
-            devicesList.setAdapter(adapter);
+            //devicesList.setAdapter(adapter);
 
             //initialize file writing stuff
             checkPermissions();
@@ -397,14 +399,28 @@ public class ScanActivity extends AppCompatActivity {
                                 removeHighestValues(tmpListBeacon3);
                                 removeHighestValues(tmpListBeacon4);
                             }
+
                             //die Werte mitteln und position ermitteln
                             averagedValue1 = getAverage(tmpListBeacon1);
                             averagedValue2 = getAverage(tmpListBeacon2);
                             averagedValue3 = getAverage(tmpListBeacon3);
                             averagedValue4 = getAverage(tmpListBeacon4);
 
+//                            if(rbRemoveBeacon.isChecked())
+//                            {
+//                                //triangulieren
+//                                pos = triangulatePosition(getDistance(averagedValue1), getDistance(averagedValue2), getDistance(averagedValue3), getDistance(averagedValue4));
+//                            }
+
                             //neue position ermitteln
-                            pos = checkPosition(averagedValue1, averagedValue2, averagedValue3, averagedValue4);
+//                            else
+//                            {
+                                pos = checkPosition(averagedValue1, averagedValue2, averagedValue3, averagedValue4);
+  //                          }
+
+
+                            tvPosition.setText("Pos: " + pos);
+                            Log.e(TAG, "onScanResult: Position bestimmt: " + pos );
 
                             view = gridMap.getChildAt(pos);
                             tv = (TextView) view;
@@ -419,7 +435,7 @@ public class ScanActivity extends AppCompatActivity {
 //
                        else{
                             //scanresult erhalten!
-                            Log.e(TAG, "SCANRESULT ERHALTEN!!:" + result.getDevice().getAddress());
+                           // Log.d(TAG, "SCANRESULT ERHALTEN!!:" + result.getDevice().getAddress());
                             //rssi nehmen
                             int rssi = result.getRssi();
                             //mac adresse holen
@@ -428,20 +444,24 @@ public class ScanActivity extends AppCompatActivity {
                             switch (adresse){
                                 case "C2:54:B9:63:3D:E8":
                                     Log.e(TAG, "Found Beacon 1");
+                                    tvPosition.setText("Found B1");
                                     tmpListBeacon1.add(rssi);
                                     break;
                                 case "D3:E0:BC:94:3C:07":
                                     Log.e(TAG, "Found Beacon 2");
+                                    tvPosition.setText("Found B2");
                                     Toast.makeText(getApplicationContext(), "2", Toast.LENGTH_SHORT);
                                     tmpListBeacon2.add(rssi);
                                     break;
                                 case "E8:42:65:9B:2D:64":
                                     Log.e(TAG, "Found Beacon 3");
+                                    tvPosition.setText("Found B2");
                                     Toast.makeText(getApplicationContext(), "3", Toast.LENGTH_SHORT);
                                     tmpListBeacon3.add(rssi);
                                     break;
                                 case "E9:CD:7D:C3:57:FE":
                                     Log.e(TAG, "Found Beacon 4");
+                                    tvPosition.setText("Found B2");
                                     Toast.makeText(getApplicationContext(), "4", Toast.LENGTH_SHORT);
                                     tmpListBeacon4.add(rssi);
                                     break;
