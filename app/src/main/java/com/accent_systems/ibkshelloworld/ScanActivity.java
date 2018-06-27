@@ -31,6 +31,7 @@ import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,7 +77,11 @@ public class ScanActivity extends AppCompatActivity {
     //2D-Table for comparing values, arrays with averaged values from measurements
     List<double[]> theTable = new ArrayList<>();
     GridLayout gridMap;
+    RadioGroup rgMode;
+    //Radiobuttons for mode
     RadioButton rbAverage, rbRemoveHighestValues, rbRemoveBeacon;
+    //Radiobuttons for amount of signals taken
+    RadioButton rb7, rb12, rb20, rb30;
     //arrays for received data for each beacon
     int amountOfMeasurmentsPerBeacon = 10;
     List<Integer> tmpListBeacon1 = new ArrayList<>();
@@ -111,11 +116,18 @@ public class ScanActivity extends AppCompatActivity {
         rbRemoveHighestValues = (RadioButton) findViewById(R.id.rbRemoveHighestValues);
         rbRemoveBeacon = (RadioButton) findViewById(R.id.rbRemoveBeacon);
         tvPosition = (TextView) findViewById(R.id.tvPosition);
-//       View view = gridMap.getChildAt(15);
-//        TextView tv = (TextView) view;
-//        tv.setBackgroundColor(BLUE);
+        rgMode = (RadioGroup) findViewById(R.id.rgMode);
+        rgMode.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                startScan();
+            }
+        });
+        rb7 = (RadioButton) findViewById(R.id.rb7);
+        rb12 = (RadioButton) findViewById(R.id.rb12);
+        rb20 = (RadioButton) findViewById(R.id.rb20);
+        rb30 = (RadioButton) findViewById(R.id.rb30);
         //Initialize Table
-        //TODO: Add values here
         //A 1-8
         theTable.add(new double[]{-89.08441558,-83.0474934,-59.9166667,-91.24621212});
         theTable.add(new double[]{-93.07643312,-77.22012579,-69.34795764,-92.37359551});
@@ -291,7 +303,7 @@ public class ScanActivity extends AppCompatActivity {
             /*btnStop.setEnabled(true);
             btnStart.setEnabled(false);*/
 
-
+            amountOfMeasurmentsPerBeacon = getAmountOfMeasurements();
             adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, android.R.id.text1, scannedDeivcesList);
             //Set the adapter to the listview
             //devicesList.setAdapter(adapter);
@@ -318,6 +330,28 @@ public class ScanActivity extends AppCompatActivity {
             startLeScan(true);
 
 
+    }
+    private int getAmountOfMeasurements()
+    {
+        int amount = 10;
+
+        if(rb7.isChecked())
+        {
+            amount = 7;
+        }
+        if(rb12.isChecked())
+        {
+            amount = 12;
+        }
+        if(rb20.isChecked())
+        {
+            amount = 20;
+        }
+        if(rb30.isChecked())
+        {
+            amount = 30;
+        }
+        return amount;
     }
 
     private void checkPermissions() {
@@ -455,13 +489,13 @@ public class ScanActivity extends AppCompatActivity {
                                     break;
                                 case "E8:42:65:9B:2D:64":
                                     Log.e(TAG, "Found Beacon 3");
-                                    tvPosition.setText("Found B2");
+                                    tvPosition.setText("Found B3");
                                     Toast.makeText(getApplicationContext(), "3", Toast.LENGTH_SHORT);
                                     tmpListBeacon3.add(rssi);
                                     break;
                                 case "E9:CD:7D:C3:57:FE":
                                     Log.e(TAG, "Found Beacon 4");
-                                    tvPosition.setText("Found B2");
+                                    tvPosition.setText("Found B4");
                                     Toast.makeText(getApplicationContext(), "4", Toast.LENGTH_SHORT);
                                     tmpListBeacon4.add(rssi);
                                     break;
